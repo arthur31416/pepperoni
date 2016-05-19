@@ -3,12 +3,11 @@ import {
   Text,
   View,
   PropTypes,
-  StyleSheet
+  StyleSheet,
+  MapView
 } from 'react-native';
 
 import * as NavigationState from '../../modules/navigation/NavigationState';
-
-const color = () => Math.floor(255 * Math.random());
 
 const placesData = require('../../data/samplePlaces.json');
 const places = placesData.London;
@@ -23,7 +22,7 @@ const PlacesView = React.createClass({
 
   getInitialState() {
     return {
-      background: `rgba(${color()},${color()},${color()}, 1)`
+      backgroundColor: 'white'
     };
   },
 
@@ -35,6 +34,20 @@ const PlacesView = React.createClass({
   render() {
 
     const place = places[randomPicker()];
+    const marker = [
+      {
+        latitude: place.latitude,
+        longitude: place.longitude,
+        title: place.name,
+        subtitle: place.type
+      }
+    ];
+    const region = {
+      latitude: place.latitude,
+      longitude: place.longitude,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005
+    };
 
     return (
       <View style={[styles.container, {backgroundColor: this.state.background}]}>
@@ -47,9 +60,11 @@ const PlacesView = React.createClass({
         <Text style={styles.placeInfo}>
           Distance: {place.distance}
         </Text>
-        <Text style={styles.placeInfo}>
-          Address: {place.address}
-        </Text>
+        <MapView
+          style={styles.map}
+          region={region}
+          annotations={marker}
+        />
       </View>
     );
   }
@@ -66,6 +81,16 @@ const styles = StyleSheet.create({
   },
   placeInfo: {
     fontSize: 20
+  },
+  placeAddress: {
+    fontSize: 15
+  },
+  map: {
+    height: 150,
+    width: 250,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: '#000000'
   }
 });
 
